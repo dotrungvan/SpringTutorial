@@ -39,4 +39,22 @@ public class HomeController {
 			return "hello";
 		}
 	}
+
+	@GetMapping(value = "/home2", produces = "application/json")
+	public String home2(@Nullable @RequestParam(value = APIConst.ACCESS_TOKEN) String accessToken,
+			HttpServletRequest request, HttpServletResponse response) throws JsonProcessingException {
+		if (StringUtils.hasText(accessToken)) {
+			Map<String, String> token = new HashMap<String, String>();
+			token.put(APIConst.ACCESS_TOKEN, accessToken);
+			return jsonHandler.toJson(token);
+		} else {
+			return "hello2";
+		}
+	}
+
+	@GetMapping(value = "/login", produces = "application/json")
+	public String login(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		System.out.println("Login Controller");
+		return "login";
+	}
 }
