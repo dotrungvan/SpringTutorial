@@ -15,8 +15,13 @@ public class ExceptionHandleController {
 	}
 
 	@ExceptionHandler(value = JsonParseException.class)
-	public ResponseEntity<Object> exceptionJsonParse(JsonParseException exception) {
+	public ResponseEntity<Object> jsonParseException(JsonParseException exception) {
 		return new ResponseEntity<>("JsonParseException Handle:" + exception.getMessage(), HttpStatus.NOT_FOUND);
 	}
 
+	@ExceptionHandler(value = IllegalArgumentException.class)
+	public ResponseEntity<Object> illegalArgumentException(Exception exception) {
+		return new ResponseEntity<>("IllegalArgumentException Handle:" + exception.getMessage(), HttpStatus.NOT_FOUND);
+	}
+	
 }

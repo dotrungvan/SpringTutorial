@@ -58,7 +58,7 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 			Authentication authResult) throws IOException, ServletException {
 		Map<String, String> token = new HashMap<String, String>();
-		token.put(APIConst.ACCESS_TOKEN, TokenAuthenService.generateAccessToken(authResult.getName()));
+		token.put(APIConst.ACCESS_TOKEN, TokenAuthenService.generateAccessToken(authResult));
 		response.getWriter().write(objectMapper.writeValueAsString(token));
 		response.getWriter().flush();
 	}

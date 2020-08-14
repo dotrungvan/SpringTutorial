@@ -41,15 +41,8 @@ public class HomeController {
 	}
 
 	@GetMapping(value = "/home2", produces = "application/json")
-	public String home2(@Nullable @RequestParam(value = APIConst.ACCESS_TOKEN) String accessToken,
-			HttpServletRequest request, HttpServletResponse response) throws JsonProcessingException {
-		if (StringUtils.hasText(accessToken)) {
-			Map<String, String> token = new HashMap<String, String>();
-			token.put(APIConst.ACCESS_TOKEN, accessToken);
-			return jsonHandler.toJson(token);
-		} else {
-			return "hello2";
-		}
+	public String home2(HttpServletRequest request, HttpServletResponse response) throws JsonProcessingException {
+		return "home2";
 	}
 
 	@GetMapping(value = "/login", produces = "application/json")

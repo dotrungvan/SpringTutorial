@@ -12,27 +12,28 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.example.SpringTutorial.filter.JWTAuthenticationFilter;
 import com.example.SpringTutorial.filter.JWTLoginFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-	
+
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/")
-			.antMatchers("/error")
-			.antMatchers(HttpMethod.GET,"/login")
-			.antMatchers("/home");
+		web.ignoring().antMatchers("/").antMatchers("/error").antMatchers(HttpMethod.GET, "/login")
+				.antMatchers("/home");
 		super.configure(web);
 	}
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable().httpBasic().disable()
 				.authorizeRequests()
 				.antMatchers(HttpMethod.POST, "/login").permitAll().and()
 				.addFilterBefore(new JWTLoginFilter("/login", authenticationManager()),
-						UsernamePasswordAuthenticationFilter.class);
+						UsernamePasswordAuthenticationFilter.class)
+				.addFilterBefore(new JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);;
 		super.configure(http);
 	}
 
@@ -41,10 +42,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 		return bCryptPasswordEncoder;
 	}
-	
+
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication().withUser("admin").password(this.passwordEncoder().encode("password")).roles("USER");
+		auth.inMemoryAuthentication().withUser("admin").password(this.passwordEncoder().encode("password"))
+			.roles("ADMIN","ADMIN_2");
+		auth.inMemoryAuthentication().withUser("user").password(this.passwordEncoder().encode("password"))
+			.roles("USER");
+		auth.inMemoryAuthentication().withUser("newaccount").password(this.passwordEncoder().encode("password")).roles("");
 	}
-
 }
