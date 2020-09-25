@@ -26,7 +26,7 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
 			throws IOException, ServletException {
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
 		try {
-//			System.out.println("Authentication Filter: filter");
+			System.out.println("Authentication Filter: filter");
 			Authentication auth = TokenAuthenService.validateToken((HttpServletRequest) request);
 			Assert.notNull(auth, "Token invalid");
 			SecurityContextHolder.getContext().setAuthentication(auth);

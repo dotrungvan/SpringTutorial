@@ -40,7 +40,7 @@ public class TokenAuthenService {
 				.getBody();
 		String user = infomationToken.getAudience();
 		String roleStr = infomationToken.getSubject();
-		if (StringUtils.hasLength(roleStr)) {
+		if (StringUtils.hasLength(roleStr) && roleStr.contains(",")) {
 			String[] arrRole = roleStr.substring(1, roleStr.length() - 1).split(",");
 			for (int i = 0; i < arrRole.length; i++) {
 				lstRole.add(new SimpleGrantedAuthority(arrRole[i]));
