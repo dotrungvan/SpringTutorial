@@ -3,6 +3,7 @@ package com.example.SpringTutorial.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -21,10 +22,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable().authorizeRequests()
-			.antMatchers("/home").hasRole("ADMIN")
-			.antMatchers("/api/v1/students").hasRole("ADMIN")
-			.anyRequest().authenticated().and().httpBasic();
+		http.csrf().disable().authorizeRequests().antMatchers("/api/v1/students/**")
+				.hasRole(ApplicationUserRole.ADMIN.name()).antMatchers(HttpMethod.POST, "/api/v1/students/**")
+				.hasRole(ApplicationUserRole.ADMIN.name()).anyRequest().authenticated().and().formLogin()
+				.usernameParameter("username").passwordParameter("password")
+//				.loginPage("/login").permitAll()
+				.defaultSuccessUrl("/home",true).and().rememberMe().rememberMeParameter("remember-me");
+				;
 	}
 
 	@Bean
@@ -36,10 +40,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 		auth.inMemoryAuthentication().withUser("admin").password(this.passwordEncoder().encode("password"))
-				.roles(ApplicationUserRole.ADMIN.name());
-		auth.inMemoryAuthentication().withUser("student").password(this.passwordEncoder().encode("password"))
-				.roles(ApplicationUserRole.STUDENT.name());
-		auth.inMemoryAuthentication().withUser("teacher").password(this.passwordEncoder().encode("password"))
-				.roles(ApplicationUserRole.TEACHER.name());
+				.authorities(ApplicationUserRole.ADMIN.getGrantedAuthority()).and()
+				.withUser("student").password(this.passwordEncoder().encode("password"))
+				.authorities(ApplicationUserRole.STUDENT.getGrantedAuthority()).and()
+				.withUser("teacher").password(this.passwordEncoder().encode("password"))
+				.authorities(ApplicationUserRole.TEACHER.getGrantedAuthority());
 	}
 }
